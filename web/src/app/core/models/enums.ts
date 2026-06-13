@@ -1,0 +1,21 @@
+export enum StatusOcorrencia {
+  RECEBIDA = 'RECEBIDA',
+  EM_ANALISE = 'EM_ANALISE',
+  EM_ATENDIMENTO = 'EM_ATENDIMENTO',
+  RESOLVIDA = 'RESOLVIDA',
+}
+
+export enum Categoria {
+  BURACO = 'BURACO',
+  ILUMINACAO = 'ILUMINACAO',
+  CALCADA = 'CALCADA',
+  ALAGAMENTO = 'ALAGAMENTO',
+  VANDALISMO = 'VANDALISMO',
+  OUTRO = 'OUTRO',
+}
+
+export enum TipoUsuario {
+  CIDADAO = 'CIDADAO',
+  TECNICO = 'TECNICO',
+  GESTOR = 'GESTOR',
+}

@@ -1,1 +1,6 @@
 include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Enums usam nomes ASCII maiúsculos para bater com o backend Java (convenção do projeto)
+    constant_identifier_names: false

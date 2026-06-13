@@ -1,0 +1,85 @@
+<div class="login-page">
+  <div class="login-card">
+    <!-- Logo -->
+    <div class="logo-row">
+      <div class="logo-mark">
+        <span class="material-symbols-rounded">domain</span>
+      </div>
+      <div>
+        <div class="logo-title">Cidade Ágil</div>
+        <div class="logo-sub">Painel do Gestor</div>
+      </div>
+    </div>
+
+    <p class="card-desc">
+      Acesse para gerenciar ocorrências e atualizar o status dos atendimentos municipais.
+    </p>
+
+    <!-- Error banner -->
+    @if (errorMsg()) {
+      <div class="err-alert" role="alert">
+        <span class="material-symbols-rounded">error</span>
+        {{ errorMsg() }}
+      </div>
+    }
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="form-field" [class.has-error]="errorMsg() && form.get('email')?.dirty" style="margin-bottom: 14px">
+        <label for="email">E-mail institucional</label>
+        <div class="field-input">
+          <span class="material-symbols-rounded">mail</span>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="gestor@prefeitura.gov.br"
+            autocomplete="email"
+            (input)="onInput()"
+          />
+        </div>
+      </div>
+
+      <div class="form-field" [class.has-error]="errorMsg() && form.get('senha')?.dirty" style="margin-bottom: 14px">
+        <label for="senha">Senha</label>
+        <div class="field-input">
+          <span class="material-symbols-rounded">lock</span>
+          <input
+            id="senha"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="senha"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            (input)="onInput()"
+          />
+          <button type="button" class="toggle-pw" (click)="togglePassword()" [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Mostrar senha'">
+            <span class="material-symbols-rounded">{{ showPassword() ? 'visibility' : 'visibility_off' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TODO: implementar sessão persistente (usa localStorage por padrão) -->
+      <div class="remember-row">
+        <input type="checkbox" id="remember" checked />
+        <span>Manter sessão ativa</span>
+      </div>
+
+      <button
+        type="submit"
+        class="btn"
+        [class.btn-primary]="!isLoading()"
+        [class.btn-loading]="isLoading()"
+        [disabled]="isLoading()"
+      >
+        @if (isLoading()) {
+          <span class="spinner"></span>
+          Entrando…
+        } @else {
+          Entrar no painel
+        }
+      </button>
+    </form>
+
+    <p class="card-footer">Acesso restrito a gestores municipais com credencial ativa.</p>
+  </div>
+</div>

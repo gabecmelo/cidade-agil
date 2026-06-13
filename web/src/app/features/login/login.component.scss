@@ -1,0 +1,31 @@
+.login-page {
+  min-height: 100vh;
+  background: var(--n-50);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.err-alert {
+  margin-bottom: 14px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle-pw {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  color: var(--n-500);
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+
+  .material-symbols-rounded {
+    font-size: 20px;
+  }
+}

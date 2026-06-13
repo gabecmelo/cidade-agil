@@ -52,6 +52,15 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
+Para aplicar migrations manualmente sem subir o servidor (útil em desenvolvimento):
+
+```bash
+cd backend
+./mvnw initialize flyway:migrate
+```
+
+O `initialize` é necessário para que o Maven carregue as variáveis do `.env` antes de executar o plugin do Flyway.
+
 A API estará disponível em `http://localhost:8080`. A documentação interativa (Swagger) pode ser acessada em `http://localhost:8080/swagger-ui.html`.
 
 **4. Rode o app mobile**

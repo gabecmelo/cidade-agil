@@ -1,0 +1,30 @@
+<header class="topbar">
+  <a class="topbar-logo" routerLink="/fila">
+    <div class="logo-icon">
+      <span class="material-symbols-rounded">domain</span>
+    </div>
+    Cidade Ágil — Painel
+  </a>
+
+  <nav>
+    <a routerLink="/fila" routerLinkActive="active">Fila</a>
+    <a class="disabled" title="Em breve">Mapa</a>
+    <a class="disabled" title="Em breve">Relatórios</a>
+  </nav>
+
+  <div class="spacer"></div>
+
+  <div class="user-info">
+    <div class="avatar">{{ initials() }}</div>
+    {{ currentUser()?.email }}
+  </div>
+
+  <button class="btn-logout" (click)="logout()" type="button">
+    <span class="material-symbols-rounded">logout</span>
+    Sair
+  </button>
+</header>
+
+<main class="shell-content">
+  <router-outlet />
+</main>

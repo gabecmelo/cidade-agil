@@ -1,0 +1,65 @@
+<div class="modal-backdrop" (click)="onBackdropClick($event)" (keydown)="onEsc($event)" tabindex="-1">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <h3 id="dialog-title">Atualizar status</h3>
+    <p class="modal-sub">
+      Ocorrência <strong>#{{ ocorrencia().id }}</strong> ·
+      {{ ocorrencia().bairro ?? '—' }}
+    </p>
+
+    <div class="modal-current-status">
+      Status atual:
+      <span class="badge" [class]="statusDisplay(ocorrencia().status).cssClass">
+        <span class="material-symbols-rounded">{{ statusDisplay(ocorrencia().status).icon }}</span>
+        {{ statusDisplay(ocorrencia().status).label }}
+      </span>
+    </div>
+
+    @if (errorMsg()) {
+      <div class="err-alert" style="margin-bottom: 12px">
+        <span class="material-symbols-rounded">error</span>
+        {{ errorMsg() }}
+      </div>
+    }
+
+    <div class="modal-field">
+      <label for="novo-status">Novo status</label>
+      <select
+        id="novo-status"
+        [ngModel]="novoStatus()"
+        (ngModelChange)="novoStatus.set($event)"
+      >
+        <option value="">Selecione…</option>
+        @for (s of proximosStatus; track s) {
+          <option [value]="s">{{ statusDisplay(s).label }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="modal-field">
+      <label for="observacao">Observação (opcional)</label>
+      <textarea
+        id="observacao"
+        placeholder="Descreva a ação realizada…"
+        [ngModel]="observacao()"
+        (ngModelChange)="observacao.set($event)"
+      ></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" type="button" (click)="fechar.emit()">Cancelar</button>
+      <button
+        class="btn-save"
+        type="button"
+        [disabled]="!podeSalvar"
+        (click)="salvar()"
+      >
+        @if (isLoading()) {
+          <span class="spinner" style="border-color: rgba(255,255,255,.3); border-top-color: #fff"></span>
+          Salvando…
+        } @else {
+          Salvar
+        }
+      </button>
+    </div>
+  </div>
+</div>

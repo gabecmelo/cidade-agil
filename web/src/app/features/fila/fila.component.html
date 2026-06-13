@@ -1,0 +1,139 @@
+<!-- Page header -->
+<div class="page-header">
+  <h1 class="page-title">Fila priorizada</h1>
+
+  <div class="header-actions">
+    <div class="search-field form-field">
+      <div class="field-input">
+        <span class="material-symbols-rounded">search</span>
+        <input
+          type="text"
+          placeholder="Buscar por ID, bairro…"
+          [value]="searchTerm()"
+          (input)="onSearch($any($event.target).value)"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="kpis-grid">
+  <div class="kpi-card kpi-recebida">
+    <div class="kpi-label">Recebidas</div>
+    <div class="kpi-value">{{ kpiRecebidas() }}</div>
+  </div>
+  <div class="kpi-card kpi-analise">
+    <div class="kpi-label">Em análise</div>
+    <div class="kpi-value">{{ kpiAnalise() }}</div>
+  </div>
+  <div class="kpi-card kpi-atendimento">
+    <div class="kpi-label">Em atendimento</div>
+    <div class="kpi-value">{{ kpiAtendimento() }}</div>
+  </div>
+  <div class="kpi-card kpi-resolvida">
+    <div class="kpi-label">Resolvidas</div>
+    <div class="kpi-value">{{ kpiResolvidas() }}</div>
+  </div>
+</div>
+
+<!-- Loading -->
+@if (isLoading()) {
+  <div class="loading-state">
+    <div class="spinner dark"></div>
+    <span>Carregando ocorrências…</span>
+  </div>
+} @else {
+  <!-- Table -->
+  <div class="data-table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Categoria</th>
+          <th>Bairro</th>
+          <th style="text-align: center">Prioridade ↓</th>
+          <th>Status</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (oc of ocorrenciasPagina(); track oc.id) {
+          <tr>
+            <td class="col-id">#{{ oc.id }}</td>
+            <td>{{ categoriaLabel(oc.categoria) }}</td>
+            <td class="col-bairro">{{ oc.bairro ?? '—' }}</td>
+            <td class="col-priority" [class]="priorityClass(oc.prioridade)">{{ oc.prioridade }}</td>
+            <td>
+              <span class="badge" [class]="statusDisplay(oc.status).cssClass">
+                <span class="material-symbols-rounded">{{ statusDisplay(oc.status).icon }}</span>
+                {{ statusDisplay(oc.status).label }}
+              </span>
+            </td>
+            <td>
+              <button
+                class="action-btn"
+                [disabled]="isResolvida(oc.status)"
+                (click)="openDialog(oc)"
+                type="button"
+              >
+                <span class="material-symbols-rounded">edit</span>
+                Atualizar
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-row">Nenhuma ocorrência encontrada.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <span>{{ paginaInfo() }}</span>
+    <div class="pages">
+      <button
+        class="page-btn"
+        [class.disabled]="currentPage() === 0"
+        [disabled]="currentPage() === 0"
+        (click)="goToPage(currentPage() - 1)"
+        type="button"
+      >
+        <span class="material-symbols-rounded">chevron_left</span>
+      </button>
+
+      @for (page of pageNumbers(); track page) {
+        <button
+          class="page-btn"
+          [class.active]="page === currentPage()"
+          (click)="goToPage(page)"
+          type="button"
+        >
+          {{ page + 1 }}
+        </button>
+      }
+
+      <button
+        class="page-btn"
+        [class.disabled]="currentPage() === totalPages() - 1"
+        [disabled]="currentPage() === totalPages() - 1"
+        (click)="goToPage(currentPage() + 1)"
+        type="button"
+      >
+        <span class="material-symbols-rounded">chevron_right</span>
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Dialog -->
+@if (dialogOcorrencia()) {
+  <app-atualizar-status-dialog
+    [ocorrencia]="dialogOcorrencia()!"
+    (fechar)="closeDialog()"
+    (salvo)="onStatusSaved($event)"
+  />
+}

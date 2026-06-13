@@ -1,5 +1,6 @@
 package com.gabecmelo.cidade_agil.domain;
 
+import com.gabecmelo.cidade_agil.config.exception.TransicaoStatusInvalidaException;
 import com.gabecmelo.cidade_agil.domain.enums.Categoria;
 import com.gabecmelo.cidade_agil.domain.enums.StatusOcorrencia;
 import jakarta.persistence.*;
@@ -59,5 +60,21 @@ public class Ocorrencia {
     public void adicionarHistorico(HistoricoStatus h) {
         h.setOcorrencia(this);
         historico.add(h);
+    }
+
+    public HistoricoStatus transicionarPara(StatusOcorrencia novo, Usuario responsavel, String observacao) {
+        if (!this.status.podeTransicionarPara(novo)) {
+            throw new TransicaoStatusInvalidaException(this.status, novo);
+        }
+        StatusOcorrencia anterior = this.status;
+        this.status = novo;
+        HistoricoStatus h = HistoricoStatus.builder()
+                .de(anterior)
+                .para(novo)
+                .observacao(observacao)
+                .responsavel(responsavel)
+                .build();
+        adicionarHistorico(h);
+        return h;
     }
 }

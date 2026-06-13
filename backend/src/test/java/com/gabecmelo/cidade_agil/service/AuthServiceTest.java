@@ -1,11 +1,11 @@
 package com.gabecmelo.cidade_agil.service;
 
 import com.gabecmelo.cidade_agil.config.exception.CredenciaisInvalidasException;
-import com.gabecmelo.cidade_agil.config.exception.EmailEmUsoException;
 import com.gabecmelo.cidade_agil.config.security.JwtService;
 import com.gabecmelo.cidade_agil.controller.dto.AuthResponse;
 import com.gabecmelo.cidade_agil.controller.dto.LoginRequest;
 import com.gabecmelo.cidade_agil.controller.dto.SignupRequest;
+import com.gabecmelo.cidade_agil.controller.dto.SignupResponse;
 import com.gabecmelo.cidade_agil.domain.Usuario;
 import com.gabecmelo.cidade_agil.domain.enums.TipoUsuario;
 import com.gabecmelo.cidade_agil.repository.UsuarioRepository;
@@ -38,30 +38,29 @@ class AuthServiceTest {
     private AuthService authService;
 
     @Test
-    void signup_emailDuplicado_lancaEmailEmUsoException() {
-        when(usuarioRepository.existsByEmail("teste@email.com")).thenReturn(true);
+    void signup_emailDuplicado_retornaSucessoSemSalvar() {
+        when(usuarioRepository.existsByEmail("duplicado@email.com")).thenReturn(true);
 
-        SignupRequest request = new SignupRequest("Fulano", "teste@email.com", "senha123");
+        SignupRequest request = new SignupRequest("Fulano", "duplicado@email.com", "senha123");
 
-        assertThatThrownBy(() -> authService.signup(request))
-                .isInstanceOf(EmailEmUsoException.class);
+        SignupResponse response = authService.signup(request);
 
+        assertThat(response.mensagem()).isNotBlank();
         verify(usuarioRepository, never()).save(any());
     }
 
     @Test
-    void signup_dadosValidos_retornaTokenEtipo() {
+    void signup_dadosValidos_retornaMensagemSemToken() {
         when(usuarioRepository.existsByEmail(anyString())).thenReturn(false);
         when(passwordEncoder.encode("senha123")).thenReturn("hash");
         when(usuarioRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(jwtService.generateToken(anyString())).thenReturn("token.jwt.gerado");
 
         SignupRequest request = new SignupRequest("Fulano", "novo@email.com", "senha123");
 
-        AuthResponse response = authService.signup(request);
+        SignupResponse response = authService.signup(request);
 
-        assertThat(response.token()).isEqualTo("token.jwt.gerado");
-        assertThat(response.tipoUsuario()).isEqualTo(TipoUsuario.CIDADAO);
+        assertThat(response.mensagem()).isNotBlank();
+        verify(jwtService, never()).generateToken(anyString());
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.gabecmelo.cidade_agil.controller.dto.AuthResponse;
 import com.gabecmelo.cidade_agil.controller.dto.LoginRequest;
 import com.gabecmelo.cidade_agil.controller.dto.MeResponse;
 import com.gabecmelo.cidade_agil.controller.dto.SignupRequest;
+import com.gabecmelo.cidade_agil.controller.dto.SignupResponse;
 import com.gabecmelo.cidade_agil.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthResponse signup(@Valid @RequestBody SignupRequest request) {
+    public SignupResponse signup(@Valid @RequestBody SignupRequest request) {
         return authService.signup(request);
     }
 

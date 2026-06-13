@@ -1,12 +1,12 @@
 package com.gabecmelo.cidade_agil.service;
 
 import com.gabecmelo.cidade_agil.config.exception.CredenciaisInvalidasException;
-import com.gabecmelo.cidade_agil.config.exception.EmailEmUsoException;
 import com.gabecmelo.cidade_agil.config.security.JwtService;
 import com.gabecmelo.cidade_agil.controller.dto.AuthResponse;
 import com.gabecmelo.cidade_agil.controller.dto.LoginRequest;
 import com.gabecmelo.cidade_agil.controller.dto.MeResponse;
 import com.gabecmelo.cidade_agil.controller.dto.SignupRequest;
+import com.gabecmelo.cidade_agil.controller.dto.SignupResponse;
 import com.gabecmelo.cidade_agil.domain.Usuario;
 import com.gabecmelo.cidade_agil.domain.enums.TipoUsuario;
 import com.gabecmelo.cidade_agil.repository.UsuarioRepository;
@@ -24,22 +24,18 @@ public class AuthService {
     private final JwtService jwtService;
 
     @Transactional
-    public AuthResponse signup(SignupRequest request) {
-        if (usuarioRepository.existsByEmail(request.email())) {
-            throw new EmailEmUsoException(request.email());
+    public SignupResponse signup(SignupRequest request) {
+        // Resposta idêntica independente de o e-mail já existir — defesa contra enumeração.
+        if (!usuarioRepository.existsByEmail(request.email())) {
+            Usuario usuario = Usuario.builder()
+                    .nome(request.nome())
+                    .email(request.email())
+                    .senhaHash(passwordEncoder.encode(request.senha()))
+                    .tipo(TipoUsuario.CIDADAO)
+                    .build();
+            usuarioRepository.save(usuario);
         }
-
-        Usuario usuario = Usuario.builder()
-                .nome(request.nome())
-                .email(request.email())
-                .senhaHash(passwordEncoder.encode(request.senha()))
-                .tipo(TipoUsuario.CIDADAO)
-                .build();
-
-        usuarioRepository.save(usuario);
-
-        String token = jwtService.generateToken(usuario.getEmail());
-        return new AuthResponse(token, usuario.getTipo());
+        return new SignupResponse("Conta criada com sucesso. Faça login para continuar.");
     }
 
     @Transactional(readOnly = true)

@@ -4,7 +4,7 @@ import 'ocorrencia_mock.dart';
 import 'ocorrencia_models.dart';
 
 // Ativado via --dart-define=USE_MOCK_OCORRENCIAS=true (default dev)
-const _useMock = bool.fromEnvironment('USE_MOCK_OCORRENCIAS', defaultValue: true);
+const _useMock = bool.fromEnvironment('USE_MOCK_OCORRENCIAS', defaultValue: false);
 
 class OcorrenciaRepository {
   OcorrenciaRepository._();

@@ -2,10 +2,12 @@
 -- Senhas: gestor -> "admin123" | cidadão -> "cidadao123"
 -- Hashes gerados com BCryptPasswordEncoder (strength 10).
 -- Executar após aplicar a migration V1 com o banco já no ar.
+TRUNCATE TABLE avaliacao, historico_status, ocorrencia, usuario RESTART IDENTITY CASCADE;
 
+-- 3. Insere os usuários gerando o BCrypt direto pelo motor do Postgres (10 rounds padrão)
 INSERT INTO usuario (nome, email, senha_hash, tipo) VALUES
-    ('Gestor Teste', 'gestor@cidadeagil.gov.br', '$2a$10$tpfwHxG7OzuOcaRDcRm22e5GlczN2nif4pAfjDhHVBAuaOVhclyv2', 'GESTOR'),
-    ('Cidadão Teste', 'cidadao@teste.com',        '$2a$10$xzxzOmSmH9phSH5bmqKH..IgUv0GUtrwtOc4V4vzVOeopiaNk46l.', 'CIDADAO')
+    ('Gestor Teste', 'gestor@cidadeagil.gov.br', '$2a$10$8JqUiZKlr2IrRH6tn0tQgOQn1FgbO.Ek7wYmuEV0sL/tTG5t2nFN2', 'GESTOR'),
+    ('Cidadão Teste', 'cidadao@teste.com',       '$2a$10$bsJyT3tOtSsrLQVBgXmjE.Aw/2w7Ou5QdhjBj1Ki6qCVhKUVxmu5.', 'CIDADAO')
 ON CONFLICT (email) DO NOTHING;
 
 -- Ocorrências de teste (foto NULL — sem imagem no seed).
